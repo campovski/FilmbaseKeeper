@@ -39,7 +39,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	private JButton btnNextPage;
 	private JButton btnLastPage;
 	private int numberOfPages;
-	private List<String[]> csv;
+	private JMenuItem mntmRefresh;
 	
 	/**
 	 * Launch the application.
@@ -81,16 +81,14 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		mntmImportDisk.setAccelerator(KeyStroke.getKeyStroke("control i"));
 		mnOptions.add(mntmImportDisk);
 		
+		mntmRefresh = new JMenuItem("Refresh");
+		mntmRefresh.addActionListener(this);
+		mnOptions.add(mntmRefresh);
+		
 		mntmSearch = new JMenuItem("Search");
 		mntmSearch.addActionListener(this);
 		mntmSearch.setAccelerator(KeyStroke.getKeyStroke("control s"));
 		mnOptions.add(mntmSearch);
-		
-		csv = CSVManager.readCSV(CSVManager.SEPARATOR);
-		numberOfPages = csv.size() / FILMS_PER_PAGE;
-		if (csv.size() % FILMS_PER_PAGE != 0) {
-			numberOfPages++;
-		}
 		
 		populate();
 			
@@ -98,6 +96,12 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	
 	private void populate() {
 		contentPane.removeAll();
+		
+		List<String[]> csv = CSVManager.readCSV(CSVManager.SEPARATOR);
+		numberOfPages = csv.size() / FILMS_PER_PAGE;
+		if (csv.size() % FILMS_PER_PAGE != 0) {
+			numberOfPages++;
+		}
 		
 		JPanel commandPane = new JPanel();
 		commandPane.setLayout(new GridBagLayout());
@@ -251,6 +255,10 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		if (source == mntmImportDisk) {
 			DiskImporter importer = new DiskImporter();
 			importer.setVisible(true);
+		} else if (source == mntmRefresh) {
+			populate();
+		} else if (source == mntmSearch) {
+			
 		} else if (source == btnFirstPage) {
 			currentPage = 1;
 			populate();

@@ -26,7 +26,6 @@ public class DiskImporter extends JDialog {
 	 * Creates the dialog that allows to select the disk we want to import films from.
 	 */
 	public DiskImporter() {
-		//setBounds(100, 100, 450, 300);
 		setTitle(TITLE);
 		setResizable(false);
 		
@@ -59,6 +58,7 @@ public class DiskImporter extends JDialog {
 		contentPane.add(lblDiskPath, gbcLblDiskPath);
 		
 		final JTextField txtDiskPath = new JTextField();
+		txtDiskPath.setText(System.getProperty("user.home"));
 		txtDiskPath.addMouseListener(new MouseAdapter() {
 			private File f;
 			
@@ -123,7 +123,6 @@ public class DiskImporter extends JDialog {
 		List<String> errors = new ArrayList<String>();
 		
 		for (String name : allDiskContent) {
-			System.out.println(diskPath + "/" + name);
 			if (new File(diskPath + "/" + name).isDirectory()) {
 				String[] entry = name.split("\\[");
 				if (entry.length == 2){
@@ -142,6 +141,7 @@ public class DiskImporter extends JDialog {
 		diskDirectories.add(arr2);
 		diskDirectories.add(arr3);
 		
+		dispose();
 		return diskDirectories;
 	}
 

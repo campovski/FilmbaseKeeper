@@ -36,7 +36,6 @@ public class CSVManager {
 			return new ArrayList<String[]>();
 		}
 		
-		System.out.println(System.getProperty("user.dir"));
 		return listCSV;
 	}
 	
