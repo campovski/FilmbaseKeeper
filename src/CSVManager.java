@@ -48,7 +48,6 @@ public class CSVManager {
 			outString += diskName + System.lineSeparator();
 		}
 		
-		
 		if (append) {
 			try {
 				Files.write(Paths.get(FILMBASE), outString.getBytes("utf-8"), StandardOpenOption.APPEND);

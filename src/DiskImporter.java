@@ -24,11 +24,12 @@ public class DiskImporter extends JDialog {
 
 	/**
 	 * Creates the dialog that allows to select the disk we want to import films from.
+	 * @param filmbaseKeeper 
 	 */
-	public DiskImporter() {
+	public DiskImporter(final FilmbaseKeeper filmbaseKeeper) {
 		setTitle(TITLE);
 		setResizable(false);
-		
+				
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new GridBagLayout());
@@ -58,7 +59,7 @@ public class DiskImporter extends JDialog {
 		contentPane.add(lblDiskPath, gbcLblDiskPath);
 		
 		final JTextField txtDiskPath = new JTextField();
-		txtDiskPath.setText(System.getProperty("user.home"));
+		txtDiskPath.setText(System.getProperty("user.home")); //ONLY FOR QUICKER TESTING! REMOVE PRIOR TO USE!
 		txtDiskPath.addMouseListener(new MouseAdapter() {
 			private File f;
 			
@@ -92,6 +93,7 @@ public class DiskImporter extends JDialog {
 				String diskPath = txtDiskPath.getText();
 				if (!diskName.equals("") && !diskPath.equals("")){
 					CSVManager.writeCSV(importDisk(diskPath), diskName, true);
+					filmbaseKeeper.populate();
 				}
 			}
 		});
@@ -134,15 +136,17 @@ public class DiskImporter extends JDialog {
 				}
 			}
 		}
-		String[] arr = {"StarWars", "2008" };
-		String[] arr2 = { "Planet", "1992" };
-		String[] arr3 = { "The mo", "1585" };
+		
+		// THIS ARE TEST FILMS. REMOVE PRIOR TO USE!!
+		String[] arr = { "Star Wars", "1977" };
+		String[] arr2 = { "The Untouchables", "1987" };
+		String[] arr3 = { "Good Will Hunting", "1997" };
 		diskDirectories.add(arr);
 		diskDirectories.add(arr2);
 		diskDirectories.add(arr3);
+		// END OF TEST FILMS.
 		
 		dispose();
 		return diskDirectories;
 	}
-
 }
