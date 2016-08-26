@@ -92,7 +92,7 @@ public class DiskImporter extends JDialog {
 				String diskName = txtDiskName.getText();
 				String diskPath = txtDiskPath.getText();
 				if (!diskName.equals("") && !diskPath.equals("")){
-					CSVManager.writeCSV(importDisk(diskPath), diskName, true);
+					CSVManager.writeCSV(importDisk(diskPath), diskName);
 					filmbaseKeeper.populate();
 				}
 			}

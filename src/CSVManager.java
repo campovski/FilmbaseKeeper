@@ -17,7 +17,8 @@ import java.util.List;
  *
  */
 public class CSVManager {
-	final static String FILMBASE = "data" + File.separator + "movies.csv";
+	final static String FILMBASE_DIR = new File(FilmbaseKeeper.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent() + File.separator + "data";
+	final static String FILMBASE =  FILMBASE_DIR + File.separator + "movies.csv";
 	final static String SEPARATOR = ",";
 	
 	public static List<String[]> readCSV(String separator) {
@@ -39,7 +40,7 @@ public class CSVManager {
 		return listCSV;
 	}
 	
-	public static int writeCSV(List<String[]> content, String diskName, boolean append) {		
+	public static int writeCSV(List<String[]> content, String diskName) {		
 		String outString = "";
 		for (String[] line : content) {
 			for (String el : line) {
@@ -48,7 +49,7 @@ public class CSVManager {
 			outString += diskName + System.lineSeparator();
 		}
 		
-		if (append) {
+		if (new File(FILMBASE).exists()) {
 			try {
 				Files.write(Paths.get(FILMBASE), outString.getBytes("utf-8"), StandardOpenOption.APPEND);
 			} catch (IOException e) {
@@ -56,7 +57,7 @@ public class CSVManager {
 			}
 		} else {
 			try {
-				File f = new File("data");
+				File f = new File(FILMBASE_DIR);
 				f.mkdirs();
 				Files.write(Paths.get(FILMBASE), outString.getBytes("utf-8"));
 			} catch (IOException e) {

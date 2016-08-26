@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	private JButton btnGoToPage;
 	private JButton btnNextPage;
 	private JButton btnLastPage;
+	private JButton btnImport;
 	
 	/**
 	 * Launch the application.
@@ -187,8 +189,8 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			btnNextPage.setEnabled(true);
 		}
 		if (numberOfPages == 1) {
-			btnGoToPage.setEnabled(false);
 			txtCurrentPage.setEnabled(false);
+			btnGoToPage.setEnabled(false);
 		} else {
 			btnGoToPage.setEnabled(true);
 			txtCurrentPage.setEnabled(true);
@@ -197,31 +199,46 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		x = 0;
 		y = 0;
 		
-		JLabel lblTitle = new JLabel("Title");
-		lblTitle.setEnabled(false);
-		//TODO Add on-click event, sorting by title.
-		GridBagConstraints gbcLblTitle = new GridBagConstraints();
-		gbcLblTitle.gridx = x++;
-		gbcLblTitle.gridy = y;
-		moviesPane.add(lblTitle, gbcLblTitle);
-		
-		JLabel lblYear = new JLabel("Year");
-		lblYear.setEnabled(false);
-		//TODO Add on-click event, sorting by year.
-		GridBagConstraints gbcLblYear = new GridBagConstraints();
-		gbcLblYear.gridx = x++;
-		gbcLblYear.gridy = y;
-		moviesPane.add(lblYear, gbcLblYear);
-		
-		JLabel lblDisk = new JLabel("Disk");
-		lblDisk.setEnabled(false);
-		//TODO Add on-click event, sorting by disk.
-		GridBagConstraints gbcLblDisk = new GridBagConstraints();
-		gbcLblDisk.gridx = x++;
-		gbcLblDisk.gridy = y;
-		moviesPane.add(lblDisk, gbcLblDisk);
-		
-		y++;
+		if (numberOfPages > 0) {
+			JLabel lblTitle = new JLabel("Title");
+			lblTitle.setEnabled(false);
+			//TODO Add on-click event, sorting by title.
+			GridBagConstraints gbcLblTitle = new GridBagConstraints();
+			gbcLblTitle.gridx = x++;
+			gbcLblTitle.gridy = y;
+			moviesPane.add(lblTitle, gbcLblTitle);
+			
+			JLabel lblYear = new JLabel("Year");
+			lblYear.setEnabled(false);
+			//TODO Add on-click event, sorting by year.
+			GridBagConstraints gbcLblYear = new GridBagConstraints();
+			gbcLblYear.gridx = x++;
+			gbcLblYear.gridy = y;
+			moviesPane.add(lblYear, gbcLblYear);
+			
+			JLabel lblDisk = new JLabel("Disk");
+			lblDisk.setEnabled(false);
+			//TODO Add on-click event, sorting by disk.
+			GridBagConstraints gbcLblDisk = new GridBagConstraints();
+			gbcLblDisk.gridx = x++;
+			gbcLblDisk.gridy = y;
+			moviesPane.add(lblDisk, gbcLblDisk);
+			
+			y++;
+		} else {
+			contentPane.removeAll();
+			
+			JLabel lblNoFilms = new JLabel("We could not find '" + new File(CSVManager.FILMBASE).getAbsolutePath() + "'.  ");
+			GridBagConstraints gbcLblNoFilms = new GridBagConstraints();
+			gbcLblNoFilms.gridx = 0;
+			contentPane.add(lblNoFilms, gbcLblNoFilms);
+			
+			btnImport = new JButton("Import");
+			btnImport.addActionListener(this);
+			GridBagConstraints gbcBtnImport = new GridBagConstraints();
+			gbcBtnImport.gridx = 1;
+			contentPane.add(btnImport, gbcBtnImport);
+		}
 		
 		for (int i = FILMS_PER_PAGE * (currentPage - 1); i < Math.min(FILMS_PER_PAGE * currentPage, csv.size()); i++) {
 			x = 0;
@@ -245,7 +262,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		
-		if (source == mntmImportDisk) {
+		if (source == mntmImportDisk || source == btnImport) {
 			DiskImporter importer = new DiskImporter(this);
 			importer.setVisible(true);
 		} else if (source == mntmSearch) {
