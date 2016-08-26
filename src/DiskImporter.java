@@ -85,9 +85,9 @@ public class DiskImporter extends JDialog {
 		contentPane.add(txtDiskPath, gbcTxtDiskPath);
 		
 		JButton btnConfirmImport = new JButton("Import");
-		btnConfirmImport.addMouseListener(new MouseAdapter() {
+		btnConfirmImport.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				//TODO exception handling
 				String diskName = txtDiskName.getText();
 				String diskPath = txtDiskPath.getText();
