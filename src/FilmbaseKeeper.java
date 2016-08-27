@@ -1,11 +1,17 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,6 +23,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 
@@ -25,6 +32,8 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	
 	final private static int FILMS_PER_PAGE = 20;
 	final private static Dimension DIMENSION_BUTTON = new Dimension(55, 25);
+	final private static Color COLOR_COLUMN_NAMES = Color.gray;
+	final private static Font FONT_COLUMN_NAMES = new Font(UIManager.getFont("Label.font").getFamily(), Font.ITALIC, UIManager.getFont("Label.font").getSize());
 	final private static String TITLE = "Filmbase Keeper v0.1";
 	
 	private Integer currentPage = 1;
@@ -41,6 +50,11 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	private JButton btnNextPage;
 	private JButton btnLastPage;
 	private JButton btnImport;
+	private JLabel lblTitle;
+	private JLabel lblYear;
+	private JLabel lblDisk;
+	private List<String[]> csv;
+	private int sortByColumn;
 	
 	/**
 	 * Launch the application.
@@ -93,7 +107,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	void populate() {
 		contentPane.removeAll();
 		
-		List<String[]> csv = CSVManager.readCSV(CSVManager.SEPARATOR);
+		csv = CSVManager.readCSV(CSVManager.SEPARATOR);
 		numberOfPages = csv.size() / FILMS_PER_PAGE;
 		if (csv.size() % FILMS_PER_PAGE != 0) {
 			numberOfPages++;
@@ -200,25 +214,43 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		y = 0;
 		
 		if (numberOfPages > 0) {
-			JLabel lblTitle = new JLabel("Title");
-			lblTitle.setEnabled(false);
-			//TODO Add on-click event, sorting by title.
+			lblTitle = new JLabel("Title");
+			lblTitle.setForeground(COLOR_COLUMN_NAMES);
+			lblTitle.setFont(FONT_COLUMN_NAMES);
+			lblTitle.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					sort(e);
+				}
+			});
 			GridBagConstraints gbcLblTitle = new GridBagConstraints();
 			gbcLblTitle.gridx = x++;
 			gbcLblTitle.gridy = y;
 			moviesPane.add(lblTitle, gbcLblTitle);
 			
-			JLabel lblYear = new JLabel("Year");
-			lblYear.setEnabled(false);
-			//TODO Add on-click event, sorting by year.
+			lblYear = new JLabel("Year");
+			lblYear.setForeground(COLOR_COLUMN_NAMES);
+			lblYear.setFont(FONT_COLUMN_NAMES);
+			lblYear.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					sort(e);
+				}
+			});
 			GridBagConstraints gbcLblYear = new GridBagConstraints();
 			gbcLblYear.gridx = x++;
 			gbcLblYear.gridy = y;
 			moviesPane.add(lblYear, gbcLblYear);
 			
-			JLabel lblDisk = new JLabel("Disk");
-			lblDisk.setEnabled(false);
-			//TODO Add on-click event, sorting by disk.
+			lblDisk = new JLabel("Disk");
+			lblDisk.setForeground(COLOR_COLUMN_NAMES);
+			lblDisk.setFont(FONT_COLUMN_NAMES);
+			lblDisk.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					sort(e);
+				}
+			});
 			GridBagConstraints gbcLblDisk = new GridBagConstraints();
 			gbcLblDisk.gridx = x++;
 			gbcLblDisk.gridy = y;
@@ -256,6 +288,35 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		}
 		
 		pack();
+	}
+	
+	private int sort(MouseEvent e) {
+		Object source = e.getSource();
+		
+		if (source == lblTitle) {
+			sortByColumn = 0;
+		} else if (source == lblYear) {
+			sortByColumn = 1;
+		} else if (source == lblDisk) {
+			sortByColumn = 2;
+		} else {
+			sortByColumn = -1;
+			return -1;
+		}
+		
+		Collections.sort(csv, new Comparator<String[]>() {
+			@Override
+			public int compare(String[] film1, String[] film2) {
+				String entry1 = film1[sortByColumn];
+				String entry2 = film2[sortByColumn];
+				return entry1.compareTo(entry2);
+			}
+			
+		});
+		
+		CSVManager.rewriteCSV(csv);
+		populate();
+		return 0;
 	}
 
 	@Override

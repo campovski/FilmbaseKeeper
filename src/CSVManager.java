@@ -42,9 +42,9 @@ public class CSVManager {
 	
 	public static int writeCSV(List<String[]> content, String diskName) {		
 		String outString = "";
-		for (String[] line : content) {
-			for (String el : line) {
-				outString += el + SEPARATOR;
+		for (String[] film : content) {
+			for (String entry : film) {
+				outString += entry + SEPARATOR;
 			}
 			outString += diskName + System.lineSeparator();
 		}
@@ -66,6 +66,23 @@ public class CSVManager {
 			}
 		}
 
+		return 0;
+	}
+	
+	public static int rewriteCSV(List<String[]> content) {
+		String outString = "";
+		for (String[] film : content) {
+			for (String entry : film) {
+				outString += entry + SEPARATOR;
+			}
+			outString += System.lineSeparator();
+		}
+		try {
+			Files.write(Paths.get(FILMBASE), outString.getBytes("utf-8"));
+		} catch (IOException e) {
+			return 1;
+		}
+		
 		return 0;
 	}
 }
