@@ -45,8 +45,7 @@ public class DuplicatesViewer extends JDialog {
 		
 		long duplicatesModified = new File(CSVManager.DUPLICATES).lastModified();
 		long currentTime = System.currentTimeMillis();
-		
-		if (duplicatesModified - currentTime > TIME_PASSED_TO_REFRESH_DUPLICATES || ! new File(CSVManager.DUPLICATES).exists()) {
+		if (currentTime - duplicatesModified > TIME_PASSED_TO_REFRESH_DUPLICATES || !new File(CSVManager.DUPLICATES).exists()) {
 			refreshDuplicates();
 		}
 		
