@@ -30,17 +30,18 @@ import javax.swing.border.EmptyBorder;
 @SuppressWarnings("serial")
 public class FilmbaseKeeper extends JFrame implements ActionListener {
 	
-	final private static int FILMS_PER_PAGE = 20;
-	final private static Dimension DIMENSION_BUTTON = new Dimension(55, 25);
-	final private static Color COLOR_COLUMN_NAMES = Color.gray;
-	final private static Font FONT_COLUMN_NAMES = new Font(UIManager.getFont("Label.font").getFamily(), Font.ITALIC, UIManager.getFont("Label.font").getSize());
-	final private static String TITLE = "Filmbase Keeper v0.1";
+	private static final int FILMS_PER_PAGE = 20;
+	private static final Dimension DIMENSION_BUTTON = new Dimension(55, 25);
+	private static final Color COLOR_COLUMN_NAMES = Color.gray;
+	private static final Font FONT_COLUMN_NAMES = new Font(UIManager.getFont("Label.font").getFamily(), Font.ITALIC, UIManager.getFont("Label.font").getSize());
+	private static final String TITLE = "Filmbase Keeper v0.2";
 	
 	private Integer currentPage = 1;
 	private int numberOfPages;
 
 	private JPanel contentPane;
 	private JMenuItem mntmImportDisk;
+	private JMenuItem mntmViewDuplicates;
 	private JMenuItem mntmSearch;
 
 	private JButton btnPreviousPage;
@@ -95,6 +96,13 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		mntmImportDisk.addActionListener(this);
 		mntmImportDisk.setAccelerator(KeyStroke.getKeyStroke("control i"));
 		mnOptions.add(mntmImportDisk);
+		
+		mnOptions.addSeparator();
+		
+		mntmViewDuplicates = new JMenuItem("View duplicates");
+		mntmViewDuplicates.addActionListener(this);
+		mntmViewDuplicates.setAccelerator(KeyStroke.getKeyStroke("control d"));
+		mnOptions.add(mntmViewDuplicates);
 		
 		mntmSearch = new JMenuItem("Search");
 		mntmSearch.addActionListener(this);
@@ -309,6 +317,9 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			public int compare(String[] film1, String[] film2) {
 				String entry1 = film1[sortByColumn];
 				String entry2 = film2[sortByColumn];
+				if (sortByColumn != 0 && entry1.equals(entry2)) {
+					return film1[0].compareTo(film2[0]);
+				}
 				return entry1.compareTo(entry2);
 			}
 			
@@ -324,8 +335,11 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		Object source = e.getSource();
 		
 		if (source == mntmImportDisk || source == btnImport) {
-			DiskImporter importer = new DiskImporter(this);
-			importer.setVisible(true);
+			DiskImporter diskImporter = new DiskImporter(this);
+			diskImporter.setVisible(true);
+		} else if (source == mntmViewDuplicates) {
+			DuplicatesViewer duplicatesViewer = new DuplicatesViewer();
+			duplicatesViewer.setVisible(true);
 		} else if (source == mntmSearch) {
 			//TODO Search
 		} else if (source == btnFirstPage) {
