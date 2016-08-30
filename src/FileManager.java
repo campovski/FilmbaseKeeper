@@ -14,19 +14,23 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
- */
-
-/**
  * @author campovski
+ * 
+ * This class provides all communication between program and other files.
  *
  */
-public class CSVManager {
+public class FileManager {
 	static final String FILMBASE_DIR = new File(FilmbaseKeeper.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent() + File.separator + "data";
 	static final String FILMBASE =  FILMBASE_DIR + File.separator + "movies.csv";
 	static final String DUPLICATES = FILMBASE_DIR + File.separator + "duplicates.txt";
 	static final String SEPARATOR = ",";
 	
+	/**
+	 * The method tries to read FILMBASE, if it fails, it return the empty list.
+	 * 
+	 * @param separator
+	 * @return Filled list if read is successful, otherwise return empty string.
+	 */
 	public static List<String[]> readCSV(String separator) {
 		List<String[]> listCSV = new ArrayList<String[]>();
 		
@@ -46,6 +50,14 @@ public class CSVManager {
 		return listCSV;
 	}
 	
+	/**
+	 * This method tries to write content, appended with diskName, to FILMBASE.
+	 * If it failes, it returns either 1 or 2.
+	 * 
+	 * @param content
+	 * @param diskName
+	 * @return 0, if all actions succeed, 1, if cannot append and 2 if cannot write new file
+	 */
 	public static int writeCSV(List<String[]> content, String diskName) {		
 		String outString = "";
 		for (String[] film : content) {
@@ -75,6 +87,17 @@ public class CSVManager {
 		return 0;
 	}
 	
+	/**
+	 * This method rewrites the CSV. That happens after sorting the CSV content.
+	 * If two identical movies are on the same disk, it does not add it because
+	 * that means that a movie was already on disk and was just read again (computer
+	 * filesystems doesnt allow to have to identical directory names). If only
+	 * movie title and year are equal, the method adds it in wrongDuplicates where
+	 * same movies on different disks are stored and then saved to DUPLICATES.
+	 * 
+	 * @param content
+	 * @return 0, if rewrites suceed and 1, if cannot write duplicates or movies.
+	 */
 	public static int rewriteCSV(List<String[]> content) {
 		Map<String, Set<String>> wrongDuplicates = new HashMap<String, Set<String>>();
 		String outMovies = "";

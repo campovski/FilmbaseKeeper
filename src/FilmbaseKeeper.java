@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -27,14 +28,19 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 
+/**
+ * @author campovski
+ * 
+ * This is the main class of the program. It provides user interface and connects all pieces together.
+ */
 @SuppressWarnings("serial")
 public class FilmbaseKeeper extends JFrame implements ActionListener {
 	
 	private static final int FILMS_PER_PAGE = 20;
 	private static final Dimension DIMENSION_BUTTON = new Dimension(55, 25);
-	private static final Color COLOR_COLUMN_NAMES = Color.gray;
-	private static final Font FONT_COLUMN_NAMES = new Font(UIManager.getFont("Label.font").getFamily(), Font.ITALIC, UIManager.getFont("Label.font").getSize());
-	private static final String TITLE = "Filmbase Keeper v0.2";
+	static final Color COLOR_COLUMN_NAMES = Color.gray;
+	static final Font FONT_COLUMN_NAMES = new Font(UIManager.getFont("Label.font").getFamily(), Font.ITALIC, UIManager.getFont("Label.font").getSize());
+	private static final String TITLE = "Filmbase Keeper v0.3";
 	
 	private Integer currentPage = 1;
 	private int numberOfPages;
@@ -74,7 +80,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the application.
 	 */
 	public FilmbaseKeeper() {
 		setTitle(TITLE);
@@ -112,26 +118,35 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		populate();	
 	}
 	
+	/**
+	 * Populate main window. The method uses two JPanels, one (commandPane) holds command buttons,
+	 * the other (moviesPane) shows movies.
+	 * 
+	 * The method is called at the start of main program and is called anytime that user
+	 * interface needs an update (e.g. after sorting movies).
+	 */
 	void populate() {
 		contentPane.removeAll();
 		
-		csv = CSVManager.readCSV(CSVManager.SEPARATOR);
+		csv = FileManager.readCSV(FileManager.SEPARATOR);
 		numberOfPages = csv.size() / FILMS_PER_PAGE;
 		if (csv.size() % FILMS_PER_PAGE != 0) {
 			numberOfPages++;
 		}
 		
+		int yPane = 0;
+		
 		JPanel commandPane = new JPanel();
 		commandPane.setLayout(new GridBagLayout());
 		GridBagConstraints gbcCommandPane = new GridBagConstraints();
-		gbcCommandPane.gridy = 0;
+		gbcCommandPane.gridy = yPane++;
 		gbcCommandPane.insets = new Insets(7, 0, 10, 0);
 		contentPane.add(commandPane, gbcCommandPane);
 		
 		JPanel moviesPane = new JPanel();
 		moviesPane.setLayout(new GridBagLayout());
 		GridBagConstraints gbcMoviesPane = new GridBagConstraints();
-		gbcMoviesPane.gridy = 1;
+		gbcMoviesPane.gridy = yPane++;
 		contentPane.add(moviesPane, gbcMoviesPane);
 		
 		int x = 0, y = 0;
@@ -228,7 +243,24 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			lblTitle.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					sort(e);
+					int sortSuccessful = sort(e);
+					if (sortSuccessful == 1) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
+						error.getContentPane().add(lblError);
+					} else if (sortSuccessful == -1) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Sort called incidentally.");
+						error.getContentPane().add(lblError);
+					}
 				}
 			});
 			GridBagConstraints gbcLblTitle = new GridBagConstraints();
@@ -242,7 +274,24 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			lblYear.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					sort(e);
+					int sortSuccessful = sort(e);
+					if (sortSuccessful == 1) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
+						error.getContentPane().add(lblError);
+					} else if (sortSuccessful == -1) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Sort called incidentally.");
+						error.getContentPane().add(lblError);
+					}
 				}
 			});
 			GridBagConstraints gbcLblYear = new GridBagConstraints();
@@ -256,7 +305,24 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			lblDisk.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					sort(e);
+					int sortSuccessful = sort(e);
+					if (sortSuccessful == 1) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
+						error.getContentPane().add(lblError);
+					} else if (sortSuccessful == -1) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Sort called incidentally.");
+						error.getContentPane().add(lblError);
+					}
 				}
 			});
 			GridBagConstraints gbcLblDisk = new GridBagConstraints();
@@ -268,7 +334,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		} else {
 			contentPane.removeAll();
 			
-			JLabel lblNoFilms = new JLabel("We could not find '" + new File(CSVManager.FILMBASE).getAbsolutePath() + "'.  ");
+			JLabel lblNoFilms = new JLabel("We could not find '" + new File(FileManager.FILMBASE).getAbsolutePath() + "'.  ");
 			GridBagConstraints gbcLblNoFilms = new GridBagConstraints();
 			gbcLblNoFilms.gridx = 0;
 			contentPane.add(lblNoFilms, gbcLblNoFilms);
@@ -298,6 +364,14 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 		pack();
 	}
 	
+	/**
+	 * Method determines by parameter e on what column the filmbase must be sorted.
+	 * It then sorts the movies, updates FILMBASE and calls method populate to
+	 * update user interface. 
+	 * 
+	 * @param e
+	 * @return 0 if sorting was successful, -1 if it was called incidentally and 2 if FileManager.rewriteCSV failed
+	 */
 	private int sort(MouseEvent e) {
 		Object source = e.getSource();
 		
@@ -325,9 +399,9 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			
 		});
 		
-		CSVManager.rewriteCSV(csv);
+		int rewriteResult = FileManager.rewriteCSV(csv);
 		populate();
-		return 0;
+		return rewriteResult;
 	}
 
 	@Override
@@ -341,7 +415,8 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 			DuplicatesViewer duplicatesViewer = new DuplicatesViewer();
 			duplicatesViewer.setVisible(true);
 		} else if (source == mntmSearch) {
-			//TODO Search
+			Searcher searcher = new Searcher();
+			searcher.setVisible(true);
 		} else if (source == btnFirstPage) {
 			currentPage = 1;
 			populate();

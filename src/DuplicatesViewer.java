@@ -1,5 +1,6 @@
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -21,12 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 /**
- * 
- */
-
-/**
  * @author campovski
  *
+ * This class opens a JDialog, showing all movies that are saved on
+ * different disks (wrong duplicates).
  */
 @SuppressWarnings("serial")
 public class DuplicatesViewer extends JDialog {
@@ -34,6 +33,9 @@ public class DuplicatesViewer extends JDialog {
 	private static final long TIME_PASSED_TO_REFRESH_DUPLICATES = 86400000;
 	private JPanel contentPane;
 
+	/**
+	 * Open the dialog and refresh duplicates if neccessary.
+	 */
 	public DuplicatesViewer() {
 		setTitle(TITLE);
 		setResizable(false);
@@ -43,21 +45,73 @@ public class DuplicatesViewer extends JDialog {
 		contentPane.setLayout(new GridBagLayout());
 		setContentPane(contentPane);
 		
-		long duplicatesModified = new File(CSVManager.DUPLICATES).lastModified();
+		long duplicatesModified = new File(FileManager.DUPLICATES).lastModified();
 		long currentTime = System.currentTimeMillis();
-		if (currentTime - duplicatesModified > TIME_PASSED_TO_REFRESH_DUPLICATES || !new File(CSVManager.DUPLICATES).exists()) {
-			refreshDuplicates();
+		if (currentTime - duplicatesModified > TIME_PASSED_TO_REFRESH_DUPLICATES || !new File(FileManager.DUPLICATES).exists()) {
+			if (refreshDuplicates() == 1) {
+				JDialog error = new JDialog();
+				error.setTitle("Error");
+				error.setModal(true);
+				error.setVisible(true);
+				
+				JLabel lblError = new JLabel("Could not write to " + FileManager.DUPLICATES + ".");
+				error.getContentPane().add(lblError);
+			}
 		}
 		
 		try {
-			List<String> duplicates = Files.readAllLines(Paths.get(CSVManager.DUPLICATES), Charset.forName("utf-8"));
-			int y = 0;
+			List<String> duplicates = Files.readAllLines(Paths.get(FileManager.DUPLICATES), Charset.forName("utf-8"));
+			int x = 0, y = 0;
+			
+			JLabel lblTitle = new JLabel("Title");
+			lblTitle.setForeground(FilmbaseKeeper.COLOR_COLUMN_NAMES);
+			lblTitle.setFont(FilmbaseKeeper.FONT_COLUMN_NAMES);
+			GridBagConstraints gbcLblTitle = new GridBagConstraints();
+			gbcLblTitle.gridx = x++;
+			gbcLblTitle.gridy = y;
+			contentPane.add(lblTitle, gbcLblTitle);
+			
+			JLabel lblYear = new JLabel("Year");
+			lblYear.setForeground(FilmbaseKeeper.COLOR_COLUMN_NAMES);
+			lblYear.setFont(FilmbaseKeeper.FONT_COLUMN_NAMES);
+			GridBagConstraints gbcLblYear = new GridBagConstraints();
+			gbcLblYear.gridx = x++;
+			gbcLblYear.gridy = y;
+			contentPane.add(lblYear, gbcLblYear);
+			
+			JLabel lblDisk = new JLabel("Disk");
+			lblDisk.setForeground(FilmbaseKeeper.COLOR_COLUMN_NAMES);
+			lblDisk.setFont(FilmbaseKeeper.FONT_COLUMN_NAMES);
+			GridBagConstraints gbcLblDisk = new GridBagConstraints();
+			gbcLblDisk.gridx = x++;
+			gbcLblDisk.gridy = y;
+			contentPane.add(lblDisk, gbcLblDisk);
+			
 			for (String film : duplicates) {
-				JLabel lblDuplicate = new JLabel(film);
-				GridBagConstraints gbclblDuplicate = new GridBagConstraints();
-				gbclblDuplicate.anchor = GridBagConstraints.WEST;
-				gbclblDuplicate.gridy = y++;
-				contentPane.add(lblDuplicate, gbclblDuplicate);
+				x = 0;
+				y++;
+				
+				JLabel lblDuplicateTitle = new JLabel(film.substring(0, film.indexOf("[")-1));
+				GridBagConstraints gbclblDuplicateTitle = new GridBagConstraints();
+				gbclblDuplicateTitle.anchor = GridBagConstraints.WEST;
+				gbclblDuplicateTitle.gridx = x++;
+				gbclblDuplicateTitle.gridy = y;
+				contentPane.add(lblDuplicateTitle, gbclblDuplicateTitle);
+				
+				JLabel lblDuplicateYear = new JLabel(film.substring(film.indexOf("[") + 1, film.indexOf("]")));
+				GridBagConstraints gbcLblDuplicateYear = new GridBagConstraints();
+				gbcLblDuplicateYear.anchor = GridBagConstraints.EAST;
+				gbcLblDuplicateYear.gridx = x++;
+				gbcLblDuplicateYear.gridy = y;
+				gbcLblDuplicateYear.insets = new Insets(0, 30, 0, 30);
+				contentPane.add(lblDuplicateYear, gbcLblDuplicateYear);
+				
+				JLabel lblDuplicateDisks = new JLabel(film.substring(film.lastIndexOf("[") + 1, film.length() - 1));
+				GridBagConstraints gbcLblDuplicateDisks = new GridBagConstraints();
+				gbcLblDuplicateDisks.anchor = GridBagConstraints.WEST;
+				gbcLblDuplicateDisks.gridx = x++;
+				gbcLblDuplicateDisks.gridy = y;
+				contentPane.add(lblDuplicateDisks, gbcLblDuplicateDisks);
 			}
 		} catch (IOException e) {
 			contentPane.removeAll();
@@ -78,8 +132,14 @@ public class DuplicatesViewer extends JDialog {
 		}
 	}
 
-	private void refreshDuplicates() {
-		List<String[]> content = CSVManager.readCSV(CSVManager.SEPARATOR);
+	/**
+	 * Read FILMBASE and check for wrong duplicates.
+	 * 
+	 * @return The method returns 0 if everything is fine
+	 * and 1 if fail to write duplicates. 
+	 */
+	private int refreshDuplicates() {
+		List<String[]> content = FileManager.readCSV(FileManager.SEPARATOR);
 		Map<String, Set<String>> wrongDuplicates = new HashMap<String, Set<String>>();
 		for (int i = 0; i < content.size(); i++) {
 			if (i != content.size() - 1 && !Arrays.equals(content.get(i), content.get(i+1))) {
@@ -104,10 +164,11 @@ public class DuplicatesViewer extends JDialog {
 		}
 		
 		try {
-			Files.write(Paths.get(CSVManager.DUPLICATES), outDuplicates.getBytes("utf-8"));
+			Files.write(Paths.get(FileManager.DUPLICATES), outDuplicates.getBytes("utf-8"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return 1;
 		}
+		
+		return 0;
 	}
 }

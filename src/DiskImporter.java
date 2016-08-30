@@ -16,6 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * @author campovski
+ *
+ * This class provides support for importing movie data from disks.
+ */
 @SuppressWarnings("serial")
 public class DiskImporter extends JDialog {
 
@@ -23,7 +28,9 @@ public class DiskImporter extends JDialog {
 	private JPanel contentPane;
 
 	/**
-	 * Creates the dialog that allows to select the disk we want to import films from.
+	 * Creates the dialog that allows to select the disk we want to import films from
+	 * and its nickname, the name that will represent the disk in FILMBASE.
+	 * 
 	 * @param filmbaseKeeper 
 	 */
 	public DiskImporter(final FilmbaseKeeper filmbaseKeeper) {
@@ -92,7 +99,7 @@ public class DiskImporter extends JDialog {
 				String diskName = txtDiskName.getText();
 				String diskPath = txtDiskPath.getText();
 				if (!diskName.equals("") && !diskPath.equals("")){
-					CSVManager.writeCSV(importDisk(diskPath), diskName);
+					FileManager.writeCSV(importDisk(diskPath), diskName);
 					filmbaseKeeper.populate();
 				}
 			}
@@ -119,6 +126,13 @@ public class DiskImporter extends JDialog {
 		pack();
 	}
 	
+	/**
+	 * The reads all folders in selected diskPath. It separates folder names
+	 * into movie title and year. The metod returns the list of movies on selected disk.
+	 * 
+	 * @param diskPath
+	 * @return List<String[]> diskDirectories 
+	 */
 	private List<String[]> importDisk(String diskPath) {
 		String[] allDiskContent = new File(diskPath).list();
 		List<String[]> diskDirectories = new ArrayList<String[]>();
