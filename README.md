@@ -15,7 +15,7 @@ When you import new disk, the movies are appended to your filmbase, meaning they
 come unsorted. If you want to sort them, click on column name (*Title*, *Year* or *Disk*).
 It will sort on column selected.
 
-Were you ever worried about having the same movie on multiple disk? Well, you can now
+Were you ever worried about having the same movie on multiple disks? Well, you can now
 check all such movies by going to *Options/View duplicates*.
 
 You can also search for certain movies by going to *Options/Search*. You can search
