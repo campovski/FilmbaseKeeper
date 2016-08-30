@@ -139,7 +139,7 @@ public class DiskImporter extends JDialog {
 		List<String> errors = new ArrayList<String>();
 		
 		for (String name : allDiskContent) {
-			if (new File(diskPath + "/" + name).isDirectory()) {
+			if (new File(diskPath + File.separator + name).isDirectory()) {
 				String[] entry = name.split("\\[");
 				if (entry.length == 2){
 					entry[0] = entry[0].substring(0, entry[0].length()-1);
