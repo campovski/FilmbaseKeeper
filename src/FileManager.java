@@ -26,10 +26,10 @@ public class FileManager {
 	static final String SEPARATOR = ",";
 	
 	/**
-	 * The method tries to read FILMBASE, if it fails, it return the empty list.
+	 * The method tries to read FILMBASE, if it fails, it returns the empty list.
 	 * 
 	 * @param separator
-	 * @return Filled list if read is successful, otherwise return empty string.
+	 * @return Filled list if read was successful, otherwise returns empty string.
 	 */
 	public static List<String[]> readCSV(String separator) {
 		List<String[]> listCSV = new ArrayList<String[]>();
@@ -56,7 +56,7 @@ public class FileManager {
 	 * 
 	 * @param content
 	 * @param diskName
-	 * @return 0, if all actions succeed, 1, if cannot append and 2 if cannot write new file
+	 * @return 0 if all actions succeeded, 1 if cannot append and 2 if cannot write new file.
 	 */
 	public static int writeCSV(List<String[]> content, String diskName) {		
 		String outString = "";
@@ -91,12 +91,12 @@ public class FileManager {
 	 * This method rewrites the CSV. That happens after sorting the CSV content.
 	 * If two identical movies are on the same disk, it does not add it because
 	 * that means that a movie was already on disk and was just read again (computer
-	 * filesystems doesnt allow to have to identical directory names). If only
+	 * filesystems do not allow to have two identical directory names). If only
 	 * movie title and year are equal, the method adds it in wrongDuplicates where
 	 * same movies on different disks are stored and then saved to DUPLICATES.
 	 * 
 	 * @param content
-	 * @return 0, if rewrites suceed and 1, if cannot write duplicates or movies.
+	 * @return s0, if rewrite succeeded and 1, if cannot write duplicates or movies.
 	 */
 	public static int rewriteCSV(List<String[]> content) {
 		Map<String, Set<String>> wrongDuplicates = new HashMap<String, Set<String>>();

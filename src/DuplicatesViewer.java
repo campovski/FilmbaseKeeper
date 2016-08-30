@@ -135,8 +135,8 @@ public class DuplicatesViewer extends JDialog {
 	/**
 	 * Read FILMBASE and check for wrong duplicates.
 	 * 
-	 * @return The method returns 0 if everything is fine
-	 * and 1 if fail to write duplicates. 
+	 * @return 0 if everything is fine
+	 * and 1 if the method fails to write duplicates. 
 	 */
 	private int refreshDuplicates() {
 		List<String[]> content = FileManager.readCSV(FileManager.SEPARATOR);

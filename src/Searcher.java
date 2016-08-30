@@ -90,7 +90,7 @@ public class Searcher extends JDialog {
 	}
 
 	/**
-	 * The method checks if we inputed any search constraints. If so, it prioritizes
+	 * The method checks if user inputed any search constraints. If so, it prioritizes
 	 * partial search and it shows the results of search on resultPane.
 	 */
 	private void showSearchResults() {

@@ -143,11 +143,12 @@ public class DiskImporter extends JDialog {
 	}
 	
 	/**
-	 * The reads all folders in selected diskPath. It separates folder names
+	 * The method reads all folders in selected diskPath. It separates folder names
 	 * into movie title and year. The metod returns the list of movies on selected disk.
 	 * 
 	 * @param diskPath
-	 * @return List<String[]> diskDirectories 
+	 * @return List of String arrays, each array containing movie title at index
+	 * 0 and year at index 1. 
 	 */
 	private List<String[]> importDisk(String diskPath) {
 		String[] allDiskContent = new File(diskPath).list();
