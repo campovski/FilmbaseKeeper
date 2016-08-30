@@ -66,14 +66,22 @@ public class DiskImporter extends JDialog {
 		contentPane.add(lblDiskPath, gbcLblDiskPath);
 		
 		final JTextField txtDiskPath = new JTextField();
-		txtDiskPath.setText(System.getProperty("user.home")); //ONLY FOR QUICKER TESTING! REMOVE PRIOR TO USE!
 		txtDiskPath.addMouseListener(new MouseAdapter() {
 			private File f;
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				String os = System.getProperty("os.name");
 				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				if (os.equals("Windows")) {
+					fileChooser.setCurrentDirectory(fileChooser.getFileSystemView().getParentDirectory(new File("C:\\")));
+				} else if (os.equals("Linux")) {
+					fileChooser.setCurrentDirectory(new File("/media/" + System.getProperty("user.name")));
+				} else if (os.equals("Mac OS X")) {
+					fileChooser.setCurrentDirectory(new File("/Volumes/"));
+				} else {
+					fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				}
 				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				fileChooser.setAcceptAllFileFilterUsed(false);
 				int result = fileChooser.showOpenDialog(contentPane);
@@ -95,11 +103,19 @@ public class DiskImporter extends JDialog {
 		btnConfirmImport.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO exception handling
 				String diskName = txtDiskName.getText();
 				String diskPath = txtDiskPath.getText();
 				if (!diskName.equals("") && !diskPath.equals("")){
-					FileManager.writeCSV(importDisk(diskPath), diskName);
+					int result = FileManager.writeCSV(importDisk(diskPath), diskName);
+					if (result != 0) {
+						JDialog error = new JDialog();
+						error.setTitle("Error");
+						error.setModal(true);
+						error.setVisible(true);
+						
+						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
+						error.getContentPane().add(lblError);
+					}
 					filmbaseKeeper.populate();
 				}
 			}
@@ -150,15 +166,6 @@ public class DiskImporter extends JDialog {
 				}
 			}
 		}
-		
-		// THIS ARE TEST FILMS. REMOVE PRIOR TO USE!!
-		String[] arr = { "Star Wars", "1977" };
-		String[] arr2 = { "The Untouchables", "1987" };
-		String[] arr3 = { "Good Will Hunting", "1997" };
-		diskDirectories.add(arr);
-		diskDirectories.add(arr2);
-		diskDirectories.add(arr3);
-		// END OF TEST FILMS.
 		
 		dispose();
 		return diskDirectories;

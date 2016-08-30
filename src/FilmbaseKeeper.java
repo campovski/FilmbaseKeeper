@@ -40,7 +40,7 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 	private static final Dimension DIMENSION_BUTTON = new Dimension(55, 25);
 	static final Color COLOR_COLUMN_NAMES = Color.gray;
 	static final Font FONT_COLUMN_NAMES = new Font(UIManager.getFont("Label.font").getFamily(), Font.ITALIC, UIManager.getFont("Label.font").getSize());
-	private static final String TITLE = "Filmbase Keeper v0.3";
+	private static final String TITLE = "Filmbase Keeper v1.0";
 	
 	private Integer currentPage = 1;
 	private int numberOfPages;
