@@ -1,4 +1,4 @@
-# FilmbaseKeeper
+# Filmbase Keeper
 
 Filmbase Keeper is a program meant for all movie enthusiasts that keep a large
 collection of (pirated) movies on their disks and would like to have a solid and
