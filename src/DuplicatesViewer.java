@@ -52,10 +52,11 @@ public class DuplicatesViewer extends JDialog {
 				JDialog error = new JDialog();
 				error.setTitle("Error");
 				error.setModal(true);
-				error.setVisible(true);
 				
 				JLabel lblError = new JLabel("Could not write to " + FileManager.DUPLICATES + ".");
 				error.getContentPane().add(lblError);
+				error.pack();
+				error.setVisible(true);
 			}
 		}
 		

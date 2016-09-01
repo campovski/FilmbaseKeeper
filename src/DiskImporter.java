@@ -111,10 +111,11 @@ public class DiskImporter extends JDialog {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					}
 					filmbaseKeeper.populate();
 				}
@@ -166,6 +167,50 @@ public class DiskImporter extends JDialog {
 					errors.add(name);
 				}
 			}
+		}
+		
+		if (errors.size() > 0) {
+			final JDialog error = new JDialog();
+			error.setTitle("Error");
+			error.setModal(true);
+			
+			JPanel errorPane = new JPanel();
+			errorPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+			errorPane.setLayout(new GridBagLayout());
+			error.setContentPane(errorPane);
+			
+			JLabel lblError = new JLabel("The following folders are incorrectly named:");
+			GridBagConstraints gbcLblError = new GridBagConstraints();
+			gbcLblError.gridx = 0;
+			gbcLblError.gridy = 0;
+			gbcLblError.gridwidth = 2;
+			errorPane.add(lblError, gbcLblError);
+			
+			for (int i = 0; i < errors.size(); i++) {
+				JLabel lblErrorFolder = new JLabel("     - " + errors.get(i));
+				GridBagConstraints gbcLblErrorFolder = new GridBagConstraints();
+				gbcLblErrorFolder.anchor = GridBagConstraints.WEST;
+				gbcLblErrorFolder.gridx = 0;
+				gbcLblErrorFolder.gridy = i + 1;
+				errorPane.add(lblErrorFolder, gbcLblErrorFolder);
+			}
+			
+			JButton btnDismiss = new JButton("Dismiss");
+			btnDismiss.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					error.dispose();
+				}
+			});
+			GridBagConstraints gbcBtnDismiss = new GridBagConstraints();
+			gbcBtnDismiss.anchor = GridBagConstraints.EAST;
+			gbcBtnDismiss.gridx = 1;
+			gbcBtnDismiss.gridy = errors.size() - 1;
+			gbcBtnDismiss.gridheight = 2;
+			errorPane.add(btnDismiss, gbcBtnDismiss);
+			
+			error.pack();
+			error.setVisible(true);
 		}
 		
 		dispose();

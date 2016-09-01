@@ -248,18 +248,20 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					} else if (sortSuccessful == -1) {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Sort called incidentally.");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					}
 				}
 			});
@@ -279,18 +281,20 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					} else if (sortSuccessful == -1) {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Sort called incidentally.");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					}
 				}
 			});
@@ -310,18 +314,20 @@ public class FilmbaseKeeper extends JFrame implements ActionListener {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Could not write to " + FileManager.FILMBASE + ".");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					} else if (sortSuccessful == -1) {
 						JDialog error = new JDialog();
 						error.setTitle("Error");
 						error.setModal(true);
-						error.setVisible(true);
 						
 						JLabel lblError = new JLabel("Sort called incidentally.");
 						error.getContentPane().add(lblError);
+						error.pack();
+						error.setVisible(true);
 					}
 				}
 			});
